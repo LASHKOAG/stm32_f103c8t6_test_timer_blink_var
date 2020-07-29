@@ -57,7 +57,7 @@ static void MX_TIM4_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+uint32_t htim4_Init_Period = 7999;
 /* USER CODE END 0 */
 
 /**
@@ -99,6 +99,35 @@ int main(void)
   {
 //	  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
 //	  HAL_Delay(200);
+//	  if(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0)== GPIO_PIN_RESET){
+//		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
+//	  }else{
+//		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
+//	  }
+	  HAL_Delay(5000);
+
+	  htim4_Init_Period = 399;
+
+	  TIM4->PSC = 1000;
+//	  TIM4->ARR = 399;
+	  TIM4->ARR = htim4_Init_Period;
+	  TIM4->EGR = TIM_EGR_UG;
+
+	  HAL_Delay(5000);
+
+	  htim4_Init_Period = 7999;
+
+	  TIM4->PSC = 1000;
+//	  TIM4->ARR = 399;
+	  TIM4->ARR = htim4_Init_Period;
+	  TIM4->EGR = TIM_EGR_UG;
+
+//	  if(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0)== GPIO_PIN_SET){
+////	  		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
+////		  TIM4->ARR=399;
+//		  htim4_Init_Period = 399;
+//
+//	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -160,9 +189,9 @@ static void MX_TIM4_Init(void)
   htim4.Instance = TIM4;
   htim4.Init.Prescaler = 1000;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim4.Init.Period = 399;
+  htim4.Init.Period = htim4_Init_Period;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim4) != HAL_OK)
   {
     Error_Handler();
@@ -207,6 +236,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PA0 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 }
 
